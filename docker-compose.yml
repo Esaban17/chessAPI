@@ -21,8 +21,8 @@ services:
       - ./liquibase:/liquibase/changelog
     depends_on:
       - pgdata
-    command: --url=jdbc:postgresql://landivardb:5432/chessDB?currentSchema=public --username=postgres --password=misDatos2023! --changeLogFile=/liquibase/changelog/changelog-root.xml generate-changelog
-    #command: --url=jdbc:postgresql://landivardb:5432/chessDB?currentSchema=public --username=postgres --password=misDatos2023! --changeLogFile=changelog.xml update
+    #command: --url=jdbc:postgresql://landivardb:5432/chessDB?currentSchema=public --username=postgres --password=misDatos2023! --changeLogFile=/liquibase/changelog/changelog-root.xml generate-changelog
+    command: --url=jdbc:postgresql://landivardb:5432/chessDB?currentSchema=public --username=postgres --password=misDatos2023! --changeLogFile=changelog-root.xml update
     networks:
       - backend
   pgadmin:

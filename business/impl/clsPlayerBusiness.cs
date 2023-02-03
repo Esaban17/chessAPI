@@ -21,14 +21,15 @@ public sealed class clsPlayerBusiness<TI, TC> : IPlayerBusiness<TI>
         return new clsPlayer<TI>(x, newPlayer.email);
     }
 
-    public async Task<List<clsPlayer<TI>>> getPlayers(TI gameId)
+    public async Task<clsPlayer<TI>> getPlayer(TI playerId)
     {
-        List<clsPlayer<TI>> players = (List<clsPlayer<TI>>)await playerRepository.getPlayersByGame(gameId).ConfigureAwait(false);
-        return players;
+        var player = await playerRepository.getPlayer(playerId).ConfigureAwait(false);
+        return new clsPlayer<TI>(player.id, player.email);
     }
 
-    public Task<clsPlayer<TI>> updatePlayer(clsPlayer<TI> player)
+    public async Task<clsPlayer<TI>> updatePlayer(clsPlayer<TI> updatedPlayer)
     {
-        throw new NotImplementedException();
+        await playerRepository.updatePlayer(updatedPlayer).ConfigureAwait(false);
+        return updatedPlayer;
     }
 }

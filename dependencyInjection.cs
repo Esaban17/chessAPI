@@ -39,6 +39,11 @@ where TI : struct, IEquatable<TI>
         builder.Register(c => new qPlayer())
           .SingleInstance()
           .As<IQPlayer>();
+
+
+        builder.Register(c => new qGame())
+          .SingleInstance()
+          .As<IQGame>();
         #endregion
 
         #region "Repositories"
@@ -47,6 +52,13 @@ where TI : struct, IEquatable<TI>
                                                               c.Resolve<ILogger<clsPlayerRepository<TI, TC>>>()))
                .InstancePerDependency()
                .As<IPlayerRepository<TI, TC>>();
+
+
+        builder.Register(c => new clsGameRepository<TI, TC>(c.Resolve<IRelationalContext<TC>>(),
+                                                             c.Resolve<IQGame>(),
+                                                             c.Resolve<ILogger<clsGameRepository<TI, TC>>>()))
+              .InstancePerDependency()
+              .As<IGameRepository<TI, TC>>();
         #endregion
 
         #region "Kaizen Entity Factories"
@@ -55,12 +67,22 @@ where TI : struct, IEquatable<TI>
             IComponentContext cc = context.Resolve<IComponentContext>();
             return cc.Resolve<IPlayerRepository<TI, TC>>;
         });
+
+        builder.Register<Func<IGameRepository<TI, TC>>>(delegate (IComponentContext context)
+        {
+            IComponentContext cc = context.Resolve<IComponentContext>();
+            return cc.Resolve<IGameRepository<TI, TC>>;
+        });
         #endregion
 
         #region "Business classes"
         builder.Register(c => new clsPlayerBusiness<TI, TC>(c.Resolve<IPlayerRepository<TI, TC>>()))
                .InstancePerDependency()
                .As<IPlayerBusiness<TI>>();
+
+        builder.Register(c => new clsGameBusiness<TI, TC>(c.Resolve<IGameRepository<TI, TC>>()))
+       .InstancePerDependency()
+       .As<IGameBusiness<TI>>();
         #endregion
     }
 }
