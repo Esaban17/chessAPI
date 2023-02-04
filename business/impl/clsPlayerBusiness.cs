@@ -21,7 +21,7 @@ public sealed class clsPlayerBusiness<TI, TC> : IPlayerBusiness<TI>
         return new clsPlayer<TI>(x, newPlayer.email);
     }
 
-    public async Task<clsPlayer<TI>> getPlayer(TI playerId)
+    public async Task<clsPlayer<TI>?> getPlayer(TI playerId)
     {
         var player = await playerRepository.getPlayer(playerId).ConfigureAwait(false);
         return new clsPlayer<TI>(player.id, player.email);

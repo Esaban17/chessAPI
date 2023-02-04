@@ -24,7 +24,7 @@ namespace chessAPI.business.impl
             return new clsGame<TI>(x, newGame.started, newGame.turn, newGame.winner, newGame.whites, newGame.blacks);
         }
 
-        public async Task<clsGame<TI>> getGame(TI GameId)
+        public async Task<clsGame<TI>?> getGame(TI GameId)
         {
             var Game = await GameRepository.getGame(GameId).ConfigureAwait(false);
             return new clsGame<TI>(Game.id, Game.started, Game.turn, Game.winner, Game.whites, Game.blacks);

@@ -33,11 +33,6 @@ public class customMiddleware<TC>
                 rkm.getTransactionContext();
                 await next(context).ConfigureAwait(false);
                 rkm.commitTransactionContext();
-
-                if (context.Response.StatusCode == StatusCodes.Status200OK && context.Response.ContentLength == 0)
-                {
-                    context.Response.StatusCode = StatusCodes.Status204NoContent;
-                }
             }
             else
             {

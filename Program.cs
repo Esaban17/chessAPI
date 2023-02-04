@@ -83,11 +83,11 @@ try
 
         if (teamWhites != null)
         {
-            Results.Ok(await bs.addGame(newGame));
+            return Results.Ok(await bs.addGame(newGame));
         }
         else
         {
-            throw new System.NullReferenceException();
+            return Results.NotFound();
         }
     });
 
@@ -99,11 +99,11 @@ try
 
         if (teamBlacks != null)
         {
-            Results.Ok(await bs.updateGame(updateGame));
+            return Results.Ok(await bs.updateGame(updateGame));
         }
         else
         {
-            throw new System.NullReferenceException();
+            return Results.NotFound("Not Found");
         }
         
      });
