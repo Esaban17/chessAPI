@@ -9,7 +9,6 @@ public sealed class clsNewGame
         winner = 0;
         whites = 0;
         blacks = 0;
-
     }
 
     public string started { get; set; }

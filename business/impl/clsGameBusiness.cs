@@ -20,9 +20,9 @@ public sealed class clsGameBusiness<TI, TC> : IGameBusiness<TI>
         var x = await GameRepository.addGame(newGame).ConfigureAwait(false);
         return new clsGame<TI>(x, newGame.started, newGame.turn, newGame.winner, newGame.whites, newGame.blacks);
     }
-    public async Task<clsGame<TI>> getGame(TI Gameid)
+    public async Task<clsGame<TI>> getGame(TI GameId)
     {
-        var Game = await GameRepository.getGame(Gameid).ConfigureAwait(false);
+        var Game = await GameRepository.getGame(GameId).ConfigureAwait(false);
         return new clsGame<TI>(Game.id, Game.started, Game.turn, Game.winner, Game.whites, Game.blacks);
     }
 
