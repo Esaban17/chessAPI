@@ -21,9 +21,13 @@ public sealed class clsTeamBusiness<TI, TC> : ITeamBusiness<TI>
         var x = await teamRepository.addTeam(newTeam).ConfigureAwait(false);
         return new clsTeam<TI>(x, newTeam.name);
     }
-    public async Task<clsTeam<TI>> getTeam(TI TeamId)
+    public async Task<clsTeam<TI>?> getTeam(TI TeamId)
     {
         var Team = await teamRepository.getTeam(TeamId).ConfigureAwait(false);
+        if (Team == null)
+        {
+            return null;
+        }
         return new clsTeam<TI>(Team.id, Team.name);
     }
 

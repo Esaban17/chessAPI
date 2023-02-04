@@ -97,7 +97,7 @@ where TI : struct, IEquatable<TI>
                .InstancePerDependency()
                .As<IPlayerBusiness<TI>>();
 
-        builder.Register(c => new clsGameBusiness<TI, TC>(c.Resolve<IGameRepository<TI, TC>>()))
+        builder.Register(c => new clsGameBusiness<TI, TC>(c.Resolve<IGameRepository<TI, TC>>(), c.Resolve<ITeamRepository<TI,TC>>()))
                .InstancePerDependency()
                .As<IGameBusiness<TI>>();
 

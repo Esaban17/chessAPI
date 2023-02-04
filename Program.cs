@@ -80,7 +80,19 @@ try
 
     //INICIAR UN JUEGO
     app.MapPost("game",
-    [AllowAnonymous] async (IGameBusiness<int> bs, clsNewGame newGame) => Results.Ok(await bs.addGame(newGame)));
+    [AllowAnonymous] async (IGameBusiness<int> bs, ITeamBusiness<int> bsTeam, clsNewGame newGame) => 
+    {
+        var teamWhites = await bsTeam.getTeam(newGame.whites);
+        var teamBlacks = await bsTeam.getTeam(newGame.blacks);
+
+        if (teamBlacks != null && teamWhites != null) {
+            Results.Ok(await bs.addGame(newGame));
+        }
+        else
+        {
+            Results.NotFound("One of the 2 teams does not exist");
+        }
+    });
 
     app.Run();
 }

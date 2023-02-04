@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using chessAPI.dataAccess.interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
 namespace chessAPI;

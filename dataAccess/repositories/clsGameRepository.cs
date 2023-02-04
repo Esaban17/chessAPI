@@ -27,9 +27,9 @@ public sealed class clsGameRepository<TI, TC> : clsDataAccess<clsGameEntityModel
         return await add<TI>(p).ConfigureAwait(false);
     }
 
-    public async Task<clsGameEntityModel<TI, TC>> getGame(TI Gameid)
+    public async Task<clsGameEntityModel<TI, TC>> getGame(TI GameId)
     {
-        return await getEntity(Gameid).ConfigureAwait(false);
+        return await getEntity(GameId).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<clsGameEntityModel<TI, TC>>> addGames(IEnumerable<clsNewGame> Games)
