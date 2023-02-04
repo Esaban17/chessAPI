@@ -6,6 +6,7 @@ using chessAPI.models.game;
 using chessAPI.models.player;
 using chessAPI.models.team;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Serilog.Events;
 
@@ -74,25 +75,38 @@ try
     app.MapGet("game/{idGame}",
     [AllowAnonymous] async (IGameBusiness<int> bs, int idGame) => Results.Ok(await bs.getGame(idGame)));
 
-    //MODIFICAR UN JUEGO
-    app.MapPut("game/{idGame}",
-    [AllowAnonymous] async (IGameBusiness<int> bs, int idGame, clsGame<int> updateGame) => Results.Ok(await bs.updateGame(updateGame)));
-
     //INICIAR UN JUEGO
     app.MapPost("game",
     [AllowAnonymous] async (IGameBusiness<int> bs, ITeamBusiness<int> bsTeam, clsNewGame newGame) => 
     {
         var teamWhites = await bsTeam.getTeam(newGame.whites);
-        var teamBlacks = await bsTeam.getTeam(newGame.blacks);
 
-        if (teamBlacks != null && teamWhites != null) {
+        if (teamWhites != null)
+        {
             Results.Ok(await bs.addGame(newGame));
         }
         else
         {
-            Results.NotFound("One of the 2 teams does not exist");
+            throw new System.NullReferenceException();
         }
     });
+
+    //UNIRSE A UN JUEGO
+    app.MapPut("game/{idGame}",
+    [AllowAnonymous] async (IGameBusiness<int> bs, int idGame, ITeamBusiness<int> bsTeam, clsGame<int> updateGame) => {
+
+        var teamBlacks = await bsTeam.getTeam(updateGame.blacks);
+
+        if (teamBlacks != null)
+        {
+            Results.Ok(await bs.updateGame(updateGame));
+        }
+        else
+        {
+            throw new System.NullReferenceException();
+        }
+        
+     });
 
     app.Run();
 }
