@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using chessAPI.dataAccess.interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -32,6 +33,11 @@ public class customMiddleware<TC>
                 rkm.getTransactionContext();
                 await next(context).ConfigureAwait(false);
                 rkm.commitTransactionContext();
+
+                if (context.Response.StatusCode == StatusCodes.Status200OK && context.Response.ContentLength == 0)
+                {
+                    context.Response.StatusCode = StatusCodes.Status204NoContent;
+                }
             }
             else
             {
@@ -70,16 +76,17 @@ public class customMiddleware<TC>
     {
         var code = HttpStatusCode.InternalServerError; // 500 if unexpected
         var result = string.Empty;
-        if (ex is ApplicationException)
+        if (ex is System.ArgumentException)
         {
             code = HttpStatusCode.BadRequest;
             result = JsonSerializer.Serialize(new errorMessage(ex.Message));
         }
-        else if (ex is Exception)
+        else if (ex is System.NullReferenceException)
         {
-            Log.Logger.Error(ex, "Unexpected internal error");
-            result = JsonSerializer.Serialize(new errorMessage("Something unexpectedly bad has occurred, we are going to dig into this"));
+            code = HttpStatusCode.NotFound;
+            result = JsonSerializer.Serialize(new errorMessage("The requested resource could not be found."));
         }
+
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)code;
         return context.Response.WriteAsync(result);
