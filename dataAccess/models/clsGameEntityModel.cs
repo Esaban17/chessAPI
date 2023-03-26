@@ -1,24 +1,46 @@
 ﻿using chessAPI.dataAccess.common;
+using chessAPI.models.game;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+
 namespace chessAPI.dataAccess.models;
 
-public sealed class clsGameEntityModel<TI, TC> : relationalEntity<TI, TC>
-        where TC : struct
-        where TI : struct, IEquatable<TI>
+public sealed class clsGameEntityModel
 {
+
     public clsGameEntityModel()
     {
-        started = "";
-        turn = false;
-        winner = 0;
-        whites = 0;
-        blacks = 0;
     }
 
-    public TI id { get; set; }
+    public clsGameEntityModel(clsNewGame newGame, long id)
+    {
+        this.whites = newGame.whites;
+        this.blacks = newGame.blacks;
+        this.turn = newGame.turn;
+        this.id = id;
+        this.started = DateTimeOffset.Now.ToString();
+    }
+
+    public ObjectId Id { get; set; }
+
+    [BsonElement("id_game")]
+    public long id { get; set; }
     public string started { get; set; }
-    public bool turn { get; set; }
-    public int winner { get; set; }
     public int whites { get; set; }
     public int blacks { get; set; }
-    public override TI key { get => id; set => id = value; }
+    public bool turn { get; set; }
+    public int winner { get; set; }
+
+    public static explicit operator clsGame(clsGameEntityModel x)
+    {
+        return new clsGame()
+        {
+            id = x.id,
+            started = x.started,
+            whites = x.whites,
+            blacks = x.blacks,
+            turn = x.turn,
+            winner = x.winner
+        };
+    }
 }

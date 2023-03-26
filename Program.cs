@@ -73,40 +73,23 @@ try
 
     //OBTENER UN JUEGO POR ID
     app.MapGet("game/{idGame}",
-    [AllowAnonymous] async (IGameBusiness<int> bs, int idGame) => Results.Ok(await bs.getGame(idGame)));
+    [AllowAnonymous] async (IGameBusiness bs, long idGame) => Results.Ok(await bs.getGame(idGame)));
 
     //INICIAR UN JUEGO
     app.MapPost("game",
-    [AllowAnonymous] async (IGameBusiness<int> bs, ITeamBusiness<int> bsTeam, clsNewGame newGame) => 
+    [AllowAnonymous] async (IGameBusiness bs, clsNewGame newGame) =>
     {
-        var teamWhites = await bsTeam.getTeam(newGame.whites);
-
-        if (teamWhites != null)
-        {
-            return Results.Ok(await bs.addGame(newGame));
-        }
-        else
-        {
-            return Results.NotFound();
-        }
+        await bs.startGame(newGame).ConfigureAwait(false);
+        return Results.Ok();
     });
 
     //UNIRSE A UN JUEGO
-    app.MapPut("game/{idGame}",
-    [AllowAnonymous] async (IGameBusiness<int> bs, int idGame, ITeamBusiness<int> bsTeam, clsGame<int> updateGame) => {
-
-        var teamBlacks = await bsTeam.getTeam(updateGame.blacks);
-
-        if (teamBlacks != null)
-        {
-            return Results.Ok(await bs.updateGame(updateGame));
-        }
-        else
-        {
-            return Results.NotFound("Not Found");
-        }
-        
-     });
+    app.MapPut("/game/{id}/swapturn",
+    [AllowAnonymous] async (IGameBusiness bs, long id) =>
+    {
+        var didSwap = await bs.swapTurn(id).ConfigureAwait(false);
+        return didSwap ? Results.Ok() : Results.BadRequest();
+    });
 
     app.Run();
 }

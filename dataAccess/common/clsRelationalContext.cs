@@ -10,7 +10,7 @@ public sealed class clsRelationalContext<TC> : IRelationalContext<TC>
     private readonly IDbConnection dbConn;
     private bool connActive;
 
-    public IDbTransaction trn { get; private set; } = null;
+    public IDbTransaction trn { get; private set; } = null!;
     public ILogger<clsRelationalContext<TC>> logger { get; private set; }
     public IDBConcurrencyHandler<TC> concurrencyHandler { get; private set; }
 

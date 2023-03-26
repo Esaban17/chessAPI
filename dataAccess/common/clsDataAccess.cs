@@ -37,7 +37,7 @@ public abstract class clsDataAccess<TEntity, TKey, TC>
         protected abstract DynamicParameters keyAsParams(TKey key);
         protected abstract DynamicParameters fieldsAsParams(TEntity entity); //Populate DBParams with all fields in the table
 
-        protected async Task<IEnumerable<T>> get<T>(DynamicParameters param, string query, CommandType commandType = CommandType.Text)
+        protected async Task<IEnumerable<T>?> get<T>(DynamicParameters param, string query, CommandType commandType = CommandType.Text)
         {
             try
             {
@@ -55,17 +55,17 @@ public abstract class clsDataAccess<TEntity, TKey, TC>
             }
         }
 
-        protected async Task<IEnumerable<TEntity>> get(DynamicParameters param, string query)
+        protected async Task<IEnumerable<TEntity>?> get(DynamicParameters param, string query)
         {
             return await get<TEntity>(param, query).ConfigureAwait(false);
         }
 
-        protected async Task<IEnumerable<TEntity>> getALL(DynamicParameters param)
+        protected async Task<IEnumerable<TEntity>?> getALL(DynamicParameters param)
         {
             return await get<TEntity>(param, queries.SQLGetAll).ConfigureAwait(false);
         }
 
-        protected async Task<TEntity>? getEntity(TKey key, bool UseCache = true)
+        protected async Task<TEntity?> getEntity(TKey key, bool UseCache = true)
         {
             TEntity? result;
             if (UseCache == true && cache != null)
@@ -76,6 +76,7 @@ public abstract class clsDataAccess<TEntity, TKey, TC>
             var p = keyAsParams(key);
             var data = await get(p, queries.SQLDataEntity).ConfigureAwait(false);
             cache = data;
+
             return data?.FirstOrDefault();
         }
 
@@ -87,7 +88,7 @@ public abstract class clsDataAccess<TEntity, TKey, TC>
                     param: param,
                     transaction: rkm.trn,
                     commandType: CommandType.Text).ConfigureAwait(false);
-                return result.FirstOrDefault();
+                return result.First();
             }
             catch (SqlException ex)
             {
@@ -207,7 +208,7 @@ public abstract class clsDataAccess<TEntity, TKey, TC>
             await set(p, RowVersion, queries.UpdateWholeEntity).ConfigureAwait(false);
         }
 
-        protected async Task<TResult> set<TResult>(DynamicParameters param, TC? rowVersion, string query, Action<TResult> setFields)
+        protected async Task<TResult?> set<TResult>(DynamicParameters param, TC? rowVersion, string query, Action<TResult> setFields)
         {
             try
             {
@@ -218,13 +219,13 @@ public abstract class clsDataAccess<TEntity, TKey, TC>
                 var x = await rkm.trn.Connection.QueryAsync<TResult>(sql: query, param: param,
                                                                      transaction: rkm.trn,
                                                                      commandType: CommandType.Text).ConfigureAwait(false);
-                if (x != null)
+                if (x != null && x.Any())
                 {
                     if (cacheddata == true)
                     {
-                        setFields?.Invoke(x.FirstOrDefault());
+                        setFields?.Invoke(x.First());
                     }
-                    return x.FirstOrDefault();
+                    return x.First();
                 }
                 throw new DBConcurrencyException("Error de concurrencia en la base de datos");
             }

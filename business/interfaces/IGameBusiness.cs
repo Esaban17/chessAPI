@@ -2,10 +2,9 @@
 
 namespace chessAPI.business.interfaces;
 
-public interface IGameBusiness<TI>
-    where TI : struct, IEquatable<TI>
+public interface IGameBusiness
 {
-    Task<clsGame<TI>> addGame(clsNewGame newGame);
-    Task<clsGame<TI>> getGame(TI gameId);
-    Task<clsGame<TI>> updateGame(clsGame<TI> updatedGame);
+    Task<clsGame?> getGame(long id);
+    Task startGame(clsNewGame newGame);
+    Task<bool> swapTurn(long id);
 }

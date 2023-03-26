@@ -60,6 +60,7 @@ dotnet dev-certs https --trust
 ```
 docker volume create pg_main_data
 docker volume create pga4data
+docker volume create mongoData
 ```
 This will install the needed dependencies to store our API, the default database is PostgreSQL but feel free to adjust the app to whatever best suits you for a development database.
 
@@ -86,7 +87,8 @@ Add additional notes about how to deploy this on a live system.
 - [Autofac](https://autofac.org/)
 - [Dapper](https://github.com/DapperLib/Dapper)
 - [Serilog](https://serilog.net/)
-- [PostgreSQL](https://www.postgresql.org/) - Database
+- [PostgreSQL](https://www.postgresql.org/) - Relational Database
+- [MongoDB](https://www.mongodb.com/) - Non Relational Database
 - [ASP.Net](https://dotnet.microsoft.com/en-US/apps/aspnet) - Server Framework
 - [.Net 7](https://dotnet.microsoft.com/en-US/) - Server Environment
 
